@@ -11,6 +11,7 @@ import jsjunit.TestJS;
 import jsjunit.TestPage;
 import jsjunit.Workspace;
 import jsjunit.qunit.QUnitResult.QUnitTestResult;
+import jsjunit.qunit.QUnitResult.QUnitTestResult.QUnitTestDetail;
 import jsjunit.service.ResultService;
 import jsjunit.service.RunnerService;
 import jsjunit.service.ServerService;
@@ -167,6 +168,13 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 			}
 			sb.append(tr.getName() + " (" + tr.getPassed() + "/"
 					+ tr.getTotal() + ")" + CR);
+			
+			for (QUnitTestDetail detail : tr.getDetails()) {
+				if (!detail.isResult()) {
+					sb.append("    " + detail.getMessage());
+					sb.append(": expected '" + detail.getExpected() +"' but actual '"+  detail.getActual() +"'"+ CR);
+				}
+			}
 		}
 
 		return sb.toString();

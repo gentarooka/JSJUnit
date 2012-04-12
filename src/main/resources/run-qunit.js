@@ -116,6 +116,7 @@ function bindQunit(page, testUrl) {
 		QUnit.testDone(function(data) {
 			data.details = details;
 			children.push(data);
+			details = new Array();
 		});
 
 		QUnit.done(function(data) {

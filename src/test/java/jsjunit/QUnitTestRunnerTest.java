@@ -47,23 +47,45 @@ public class QUnitTestRunnerTest {
 		assertThat(result.getFailureCount(), is(2));
 		
 		
-		String expected0 = "TEST FAILED : 5/6"+CR+
+//		"TEST FAILED : 5/6"+CR+
+//		"[Module B] some other test (1/2)"+CR+
+//		"[Module A] second test within module (1/1)"+CR+
+//		"[Module A] first test within module (1/1)"+CR+
+//		"a basic test example (2/2)" + CR;
+				
+		String expected0 = 
+		"TEST FAILED : 5/6"+CR+
 		"[Module B] some other test (1/2)"+CR+
+		"    failing test: expected 'false' but actual 'true'"+ CR +
 		"[Module A] second test within module (1/1)"+CR+
 		"[Module A] first test within module (1/1)"+CR+
-		"a basic test example (2/2)" + CR;
+		"a basic test example (2/2)"+CR;
+
 		
 		assertThat(result.getFailures().get(0).getMessage(), is(expected0));
 		
-		String expected1 = "TEST FAILED : 10/12"+ CR + 
-		"[Module B] some other test (1/2)"+ CR + 
-		"[Module A] second test within module (1/1)"+ CR + 
-		"[Module A] first test within module (1/1)"+ CR + 
-		"[Module B] a basic test example (2/2)"+ CR + 
-		"[Module B] some other test (1/2)"+ CR + 
-		"[Module A] second test within module (1/1)"+ CR + 
-		"[Module A] first test within module (1/1)"+ CR + 
-		"a basic test example (2/2)"+ CR;
+		String expected1 = 
+				"TEST FAILED : 10/12"+CR+
+				"[Module B] some other test (1/2)"+CR+
+				"    failing test: expected 'false' but actual 'true'"+CR+
+				"[Module A] second test within module (1/1)"+CR+
+				"[Module A] first test within module (1/1)"+CR+
+				"[Module B] a basic test example (2/2)"+CR+
+				"[Module B] some other test (1/2)"+CR+
+				"    failing test: expected 'false' but actual 'true'"+CR+
+				"[Module A] second test within module (1/1)"+CR+
+				"[Module A] first test within module (1/1)"+CR+
+				"a basic test example (2/2)"+CR;
+
+//				"TEST FAILED : 10/12"+ CR + 
+//		"[Module B] some other test (1/2)"+ CR + 
+//		"[Module A] second test within module (1/1)"+ CR + 
+//		"[Module A] first test within module (1/1)"+ CR + 
+//		"[Module B] a basic test example (2/2)"+ CR + 
+//		"[Module B] some other test (1/2)"+ CR + 
+//		"[Module A] second test within module (1/1)"+ CR + 
+//		"[Module A] first test within module (1/1)"+ CR + 
+//		"a basic test example (2/2)"+ CR;
 
 		assertThat(result.getFailures().get(1).getMessage(), is(expected1));
 		assertThat(result.getRunCount(), is(3));
