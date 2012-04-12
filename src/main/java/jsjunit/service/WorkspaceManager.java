@@ -48,7 +48,9 @@ final public class WorkspaceManager {
 	public File setUpWebApp(String base, String resourceBase, String[] includes) {
 		try {
 			File dest = setUpWebappFolder(base);
-			copyResources(resourceBase, includes, dest);
+			if (!resourceBase.isEmpty()) {
+				copyResources(resourceBase, includes, dest);
+			}
 			return dest;
 		} catch (IOException e) {
 			throw new IllegalStateException(e);

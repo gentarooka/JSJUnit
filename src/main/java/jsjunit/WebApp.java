@@ -7,6 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 public @interface WebApp {
 	String contextPath();
 	String base();
-	String resourceBase();
-	String[] include();
+	String resourceBase() default "";
+	String[] include() default {};
 }

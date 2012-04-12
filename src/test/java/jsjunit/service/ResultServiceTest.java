@@ -23,7 +23,6 @@ public class ResultServiceTest {
 						"]}",
 						QUnitResult.class);
 		
-		
 		assertThat(result.getFailed(), is(1));
 		assertThat(result.getPassed(), is(2));
 		assertThat(result.getTotal(), is(3));
