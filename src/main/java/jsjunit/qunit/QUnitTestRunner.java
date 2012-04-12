@@ -67,12 +67,14 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 		TestPage testPage = getTestPage();
 		return createURL(testPage.url()).toString();
 	}
-
+	
 	@Override
 	protected Statement classBlock(final RunNotifier notifier) {
-		Statement statement = super.classBlock(notifier);
-		statement = beforeTests(statement);
-		statement = afterTests(statement);
+		Statement statement= childrenInvoker(notifier);
+		statement = beforeTests(statement); //2
+		statement= withBeforeClasses(statement); //1
+		statement = afterTests(statement); //3
+		statement= withAfterClasses(statement); //4
 		return statement;
 	}
 

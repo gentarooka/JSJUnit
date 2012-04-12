@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import jsjunit.qunit.QUnitTestRunner;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,10 +33,10 @@ public class QUnitTestRunnerTest {
 		public static void setUpClass() {
 			System.out.println("beforeClass");
 		}
-
-		@Before
-		public void setUp() {
-			System.out.println("before");
+		
+		@AfterClass
+		public static void tearDownClass() {
+			System.out.println("afterClass");
 		}
 
 	}
