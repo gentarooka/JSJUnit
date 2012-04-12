@@ -5,4 +5,5 @@ target
 .checkstyle
 .springBeans
 bin
+.svn
 
