@@ -30,6 +30,48 @@ public class QUnitResult {
 		@JsonProperty("total")
 		private int total;
 
+		@JsonProperty("details")
+		private List<QUnitTestDetail> details;
+
+		public List<QUnitTestDetail> getDetails() {
+			return details;
+		}
+
+		public void setDetails(List<QUnitTestDetail> details) {
+			this.details = details;
+		}
+
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		public static class QUnitTestDetail {
+			@JsonProperty("actual")
+			private String actual;
+			@JsonProperty("expected")
+			private String expected;
+			@JsonProperty("message")
+			private String message;
+			@JsonProperty("result")
+			private boolean result;
+			@JsonProperty("source")
+			private String source;
+			
+			public String getActual() {
+				return actual;
+			}
+			public String getExpected() {
+				return expected;
+			}
+			public String getMessage() {
+				return message;
+			}
+			public boolean isResult() {
+				return result;
+			}
+			public String getSource() {
+				return source;
+			}
+			
+		}
+
 		public String getModule() {
 			return module;
 		}

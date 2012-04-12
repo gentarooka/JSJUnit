@@ -112,7 +112,9 @@ function bindQunit(page, testUrl) {
 		runQunitFinished = false;
 
 		var children = new Array();
+		var details = new Array();
 		QUnit.testDone(function(data) {
+			data.details = details;
 			children.push(data);
 		});
 
@@ -131,6 +133,10 @@ function bindQunit(page, testUrl) {
 			}
 			
 			runQunitFinished = true;
+		});
+		
+		QUnit.log(function(data){
+			details.push(data);
 		});
 	});
 
