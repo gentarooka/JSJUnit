@@ -112,5 +112,34 @@ public class QUnitTestRunnerTest {
 		assertThat(result.getFailureCount(), is(0));
 		assertThat(result.getRunCount(), is(2));
 	}
+	
+	@RunWith(QUnitTestRunner.class)
+	@Workspace(workspace = "./target/qunit-test-runner", clean = true)
+	@TestPage(url = "http://localhost:8234/test/menu/menu.jsp", 
+		tests = {
+			@TestJS("./src/test/js/menu/menuTest.js"),
+			@TestJS("./src/test/js/menu/menuNotExist.js"),
+			@TestJS({"./src/test/js/menu/menuTest.js", "./src/test/js/menu/menuNotExist.js"}),
+		}
+	)
+	@Server(port = 8234, webapp =  
+			@WebApp(contextPath="/test", base = "./src/test/webapp", resourceBase = "./src/test/resources/samplemain", include = { "**/*.jsp", "**/*.js", "*.jsp", "*.js" }) 
+	)
+	public static class TestNotExistClass {}
+	
+	@Test
+	public void notExist() {
+		Result result = JUnitCore.runClasses(TestNotExistClass.class);
+		assertThat(result.getFailureCount(), is(2));
+		assertThat(result.getRunCount(), is(3));
+		
+		String expected = "TEST FAILED : 0/1" + CR +
+		"test case does not exist (0/1)"+ CR +
+		"    test case does not exist: expected 'null' but actual 'null'" + CR;
+
+		assertThat(result.getFailures().get(0).getMessage(), is(expected));
+		assertThat(result.getFailures().get(1).getMessage(), is(expected));
+	}
+
 
 }

@@ -64,15 +64,16 @@ function openUrl(testUrl, jsArray) {
 		} else {
 			bindQunit(page, testUrl);
 			
-			var isLoaded = false;
+			var isLoaded = true;
 			for (var i = 0; i< jsArray.length;i++) {
-				isLoaded = page.injectJs(jsArray[i]) || isLoaded;
+				isLoaded = page.injectJs(jsArray[i]) && isLoaded;
 			}
 
 			if (!isLoaded) {
 				page.evaluate(function() {
+					QUnit.config.queue = [];
 					test("test case does not exist", function() {
-						equal(true, false, "test case does not exist");
+						ok(false, "test case does not exist");
 					});
 				});
 			}
