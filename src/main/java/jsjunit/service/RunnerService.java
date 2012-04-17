@@ -8,20 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RunnerService {
-//	private final WorkspaceManager manager;
-//	public RunnerService() {
-//		if (workspace == null) {
-//			throw new IllegalArgumentException(
-//					"you need to put @Workspace annotation on your test class");
-//		}
-//
-//		this.manager = new WorkspaceManager(workspace.workspace(),
-//				workspace.clean());
-//		
-//	}
+	
+	private File runner;
+	
+	public RunnerService(File runner) {
+		this.runner = runner;
+	}
 
+	public void runChild(URL url, String... js) throws IOException {
+		runChild(url, runner.getAbsolutePath(), js);
+	}
 
-	public void runChild(URL url, String runner, String... js) throws IOException {
+	private void runChild(URL url, String runner, String... js) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ByteArrayOutputStream err = new ByteArrayOutputStream();
 

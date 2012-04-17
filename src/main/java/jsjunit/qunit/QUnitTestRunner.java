@@ -1,21 +1,18 @@
 package jsjunit.qunit;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import jsjunit.Server;
 import jsjunit.TestJS;
 import jsjunit.TestPage;
-import jsjunit.Workspace;
 import jsjunit.qunit.QUnitResult.QUnitTestResult;
 import jsjunit.qunit.QUnitResult.QUnitTestResult.QUnitTestDetail;
 import jsjunit.service.ResultService;
 import jsjunit.service.RunnerService;
 import jsjunit.service.ServerService;
-import jsjunit.service.WorkspaceManager;
+import jsjunit.service.ServiceFactory;
 
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.runner.Description;
@@ -29,31 +26,15 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 
 	private final RunnerService runnerService;
 	private final ServerService serverService;
-	private final WorkspaceManager manager;
 	private final URL url;
 
 	public QUnitTestRunner(Class<?> testClass) throws InitializationError {
 		super(testClass);
-
-		Workspace workspaceConfig = testClass.getAnnotation(Workspace.class);
-		if (workspaceConfig == null) {
-			throw new InitializationError("@Workspace does not exist on Test class.");
-		}
-		manager = new WorkspaceManager(workspaceConfig.workspace(), "qunit-test-runner-workspace",
-				workspaceConfig.clean());
 		
-		runnerService = new RunnerService();
-
-		Server serverConfig = testClass.getAnnotation(Server.class);
-		if (serverConfig != null) {
-			File webappBase = manager.setUpWebApp(serverConfig.webapp().base(),
-					serverConfig.webapp().resourceBase(), serverConfig.webapp()
-							.include());
-			serverService = new ServerService(serverConfig.port(), serverConfig
-					.webapp().contextPath(), webappBase);
-		} else {
-			serverService = null;
-		}
+		ServiceFactory factory = new ServiceFactory(testClass);
+		
+		runnerService = factory.getRunnerService();
+		serverService = factory.getServerService();
 
 		TestPage testPage = getTestPage();
 		url = createURL(testPage.url());
@@ -134,8 +115,7 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 		try {
 			eachNotifier.fireTestStarted();
 
-			runnerService.runChild(url, manager.getRunner().getAbsolutePath(),
-					child.value());
+			runnerService.runChild(url, child.value());
 			String result = serverService.getReuslt();
 
 			QUnitResult testResult = new ResultService().createResult(result,
