@@ -37,28 +37,31 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 
 		Workspace workspaceConfig = testClass.getAnnotation(Workspace.class);
 		if (workspaceConfig == null) {
-			throw new InitializationError("@Workspace does not exist on Test class.");
+			throw new InitializationError(
+					"@Workspace does not exist on Test class.");
 		}
-		manager = new WorkspaceManager(workspaceConfig.workspace(), "qunit-test-runner-workspace",
-				workspaceConfig.clean());
-		
+		manager = new WorkspaceManager(workspaceConfig.workspace(),
+				"qunit-test-runner-workspace", workspaceConfig.clean());
+
 		runnerService = new RunnerService();
 
 		Server serverConfig = testClass.getAnnotation(Server.class);
-		if (serverConfig != null) {
-			File webappBase = manager.setUpWebApp(serverConfig.webapp().base(),
-					serverConfig.webapp().resourceBase(), serverConfig.webapp()
-							.include());
-			serverService = new ServerService(serverConfig.port(), serverConfig
-					.webapp().contextPath(), webappBase);
-		} else {
-			serverService = null;
+		if (serverConfig == null) {
+			throw new InitializationError(
+					"@Servier does not exist on Test class");
 		}
+		
+		File webappBase = manager.setUpWebApp(serverConfig.webapp().base(),
+				serverConfig.webapp().resourceBase(), serverConfig.webapp()
+						.include());
+		
+		serverService = new ServerService(serverConfig.port(), serverConfig
+				.webapp().contextPath(), webappBase);
 
 		TestPage testPage = getTestPage();
 		url = createURL(testPage.url());
 	}
-	
+
 	private TestPage getTestPage() {
 		return getTestClass().getJavaClass().getAnnotation(TestPage.class);
 	}
@@ -68,14 +71,14 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 		TestPage testPage = getTestPage();
 		return createURL(testPage.url()).toString();
 	}
-	
+
 	@Override
 	protected Statement classBlock(final RunNotifier notifier) {
-		Statement statement= childrenInvoker(notifier);
-		statement = beforeTests(statement); //2
-		statement= withBeforeClasses(statement); //1
-		statement = afterTests(statement); //3
-		statement= withAfterClasses(statement); //4
+		Statement statement = childrenInvoker(notifier);
+		statement = beforeTests(statement); // 2
+		statement = withBeforeClasses(statement); // 1
+		statement = afterTests(statement); // 3
+		statement = withAfterClasses(statement); // 4
 		return statement;
 	}
 
@@ -140,10 +143,18 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 
 			QUnitResult testResult = new ResultService().createResult(result,
 					QUnitResult.class);
-
+			
 			if (testResult.getFailed() > 0) {
 				JSTestFailure failure = new JSTestFailure(describeChild(child),
 						url, buildMessage(testResult));
+				notifier.fireTestFailure(failure);
+				return;
+			}
+			
+			if (child.total() >= 0 && child.total() != testResult.getTotal()) {
+				JSTestFailure failure = new JSTestFailure(describeChild(child),
+						url, "test total count should be " + child.total()
+								+ " but actual " + testResult.getTotal());
 				notifier.fireTestFailure(failure);
 			}
 		} catch (Exception e) {
@@ -168,11 +179,12 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 			}
 			sb.append(tr.getName() + " (" + tr.getPassed() + "/"
 					+ tr.getTotal() + ")" + CR);
-			
+
 			for (QUnitTestDetail detail : tr.getDetails()) {
 				if (!detail.isResult()) {
 					sb.append("    " + detail.getMessage());
-					sb.append(": expected '" + detail.getExpected() +"' but actual '"+  detail.getActual() +"'"+ CR);
+					sb.append(": expected '" + detail.getExpected()
+							+ "' but actual '" + detail.getActual() + "'" + CR);
 				}
 			}
 		}

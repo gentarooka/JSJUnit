@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThat;
 import jsjunit.qunit.QUnitTestRunner;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -139,6 +138,27 @@ public class QUnitTestRunnerTest {
 
 		assertThat(result.getFailures().get(0).getMessage(), is(expected));
 		assertThat(result.getFailures().get(1).getMessage(), is(expected));
+	}
+
+	
+	@RunWith(QUnitTestRunner.class)
+	@Workspace(workspace = "./target/qunit-test-runner", clean = true)
+	@TestPage(url = "http://localhost:8234/test/qunit.html", 
+		tests = {
+			@TestJS(value={"./src/test/js/error.js", "./src/test/js/helloSuccessTest.js"},total=6),
+			@TestJS(value={"./src/test/js/error.js", "./src/test/js/helloSuccessTest.js"},total=4),
+		}
+	)
+	@Server(port = 8234, webapp =  
+			@WebApp(contextPath="/test", base = "./src/test/webapp", resourceBase = "./src/test/resources/samplemain", include = { "**/*.jsp", "**/*.js", "*.jsp", "*.js" }) 
+	)
+	public static class TestErrorClass {}
+	
+	@Test
+	public void errorTest() {
+		Result result = JUnitCore.runClasses(TestErrorClass.class);
+		assertThat(result.getFailureCount(), is(1));
+		assertThat(result.getRunCount(), is(2));
 	}
 
 
