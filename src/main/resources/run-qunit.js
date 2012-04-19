@@ -78,10 +78,6 @@ function openUrl(testUrl, jsArray) {
 				});
 			}
 
-			page.evaluate(function() {
-				QUnit.load();
-			});
-
 			waitFor(function() {
 				return page.evaluate(function() {
 					if (typeof (runQunitFinished) == "undefined"
@@ -140,6 +136,9 @@ function bindQunit(page, testUrl) {
 		QUnit.log(function(data){
 			details.push(data);
 		});
+		
+		QUnit.load();
+		QUnit.config.blocking = true;
 	});
 
 }

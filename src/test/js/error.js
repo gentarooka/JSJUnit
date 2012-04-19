@@ -1,0 +1,5 @@
+//syntax error
+
+
+function error() {
+)};
