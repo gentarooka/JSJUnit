@@ -77,7 +77,7 @@ public class QUnitTestRunnerTest {
 	@Workspace(workspace = "./target/qunit-test-runner", clean = true)
 	@TestPage(url = "http://localhost:8234/test/index.jsp", 
 		tests = {
-			@TestJS("./src/test/js/helloEmptyTest.js"),
+			@TestJS("./src/test/js/helloEmptyTest.js")
 		}
 	)
 	@Server(port = 8234, webapp =  
@@ -97,7 +97,7 @@ public class QUnitTestRunnerTest {
 	@TestPage(url = "http://localhost:8234/test/menu/menu.jsp", 
 		tests = {
 			@TestJS("./src/test/js/menu/menuTest.js"),
-			@TestJS("./src/test/js/menu/menuTest.js"),
+			@TestJS("./src/test/js/menu/menuTest.js")
 		}
 	)
 	@Server(port = 8234, webapp =  
@@ -118,7 +118,7 @@ public class QUnitTestRunnerTest {
 		tests = {
 			@TestJS("./src/test/js/menu/menuTest.js"),
 			@TestJS("./src/test/js/menu/menuNotExist.js"),
-			@TestJS({"./src/test/js/menu/menuTest.js", "./src/test/js/menu/menuNotExist.js"}),
+			@TestJS({"./src/test/js/menu/menuTest.js", "./src/test/js/menu/menuNotExist.js"})
 		}
 	)
 	@Server(port = 8234, webapp =  
@@ -146,7 +146,7 @@ public class QUnitTestRunnerTest {
 	@TestPage(url = "http://localhost:8234/test/qunit.html", 
 		tests = {
 			@TestJS(value={"./src/test/js/error.js", "./src/test/js/helloSuccessTest.js"},total=6),
-			@TestJS(value={"./src/test/js/error.js", "./src/test/js/helloSuccessTest.js"},total=4),
+			@TestJS(value={"./src/test/js/error.js", "./src/test/js/helloSuccessTest.js"},total=4)
 		}
 	)
 	@Server(port = 8234, webapp =  
