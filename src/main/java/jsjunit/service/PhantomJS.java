@@ -2,6 +2,7 @@ package jsjunit.service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -13,9 +14,6 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public final class PhantomJS {
-
-	private final String phantomJsPath;
-	
 	private static class ProcessDestroyer extends TimerTask {
 
 		private Process p;
@@ -37,23 +35,14 @@ public final class PhantomJS {
 
 	public PhantomJS(OutputStream out, OutputStream err, String... args)
 			throws IOException {
-		String phantomJsPath = System.getProperty("phantomjs.path", "");
-		
-		if (phantomJsPath.isEmpty()) {
-			this.phantomJsPath = phantomJsPath;
-		} else if (phantomJsPath.endsWith("/")){
-			this.phantomJsPath = phantomJsPath;
-		} else {
-			this.phantomJsPath = phantomJsPath + "/";
-		}
-		
-		
+		final String phantomJsPath = decidePath();
+
 		List<String> commands = new ArrayList<String>();
-		commands.add(this.phantomJsPath + "phantomjs");
+		commands.add(phantomJsPath);
 		for (String arg : args) {
 			commands.add(arg);
 		}
-		
+
 		ProcessBuilder processBuilder = new ProcessBuilder(
 				commands.toArray(new String[commands.size()]));
 
@@ -73,6 +62,16 @@ public final class PhantomJS {
 
 		outThread.start();
 		errThread.start();
+	}
+
+	private static final String PATH_SEPARATOR = File.pathSeparator;
+	private String decidePath() {
+		String directoryPath = System.getProperty("phantomjs.path", "");
+
+		if (!directoryPath.isEmpty() && !directoryPath.endsWith(PATH_SEPARATOR)){
+			directoryPath = directoryPath + PATH_SEPARATOR;
+		}
+		return directoryPath + "phantomjs";
 	}
 
 	public void destroy() {
