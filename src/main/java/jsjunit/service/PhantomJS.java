@@ -64,12 +64,12 @@ public final class PhantomJS {
 		errThread.start();
 	}
 
-	private static final String PATH_SEPARATOR = File.pathSeparator;
+	private static final String SEPARATOR = File.separator;
 	private String decidePath() {
 		String directoryPath = System.getProperty("phantomjs.path", "");
 
-		if (!directoryPath.isEmpty() && !directoryPath.endsWith(PATH_SEPARATOR)){
-			directoryPath = directoryPath + PATH_SEPARATOR;
+		if (!directoryPath.isEmpty() && !directoryPath.endsWith(SEPARATOR)){
+			directoryPath = directoryPath + SEPARATOR;
 		}
 		return directoryPath + "phantomjs";
 	}
