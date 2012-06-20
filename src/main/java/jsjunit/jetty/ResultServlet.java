@@ -11,9 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ResultServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -37,26 +34,36 @@ public class ResultServlet extends HttpServlet {
 
 	private static LinkedList<String> resultQue = new LinkedList<String>();
 
-	public static String getReult() {
-		String result = null;
+	public static String getResult() {
+		final String result;
 		synchronized (resultQue) {
-			
-			while(resultQue.size() == 0) {
+			while (resultQue.isEmpty()) {
 				try {
 					resultQue.wait(1000);
 				} catch (InterruptedException e) {
-					
 				}
 			}
-			
-			result = resultQue.removeFirst();
+			result = resultQue.peekFirst();
 
-			if (resultQue.size() > 0) {
-				throw new IllegalStateException();
+			if (resultQue.size() != 1) {
+				throw new IllegalStateException(String.format(
+						"QUnit.done() was called %d times. Sent informations are:[%s]",
+						resultQue.size(),
+						stringify(resultQue)
+				));
 			}
 		}
 
 		return result;
+	}
+
+	private static String stringify(LinkedList<String> queue) {
+		StringBuilder builder = new StringBuilder();
+		for (String result : queue) {
+			if (builder.length() > 0) { builder.append(", "); }
+			builder.append(result);
+		}
+		return builder.toString();
 	}
 
 }

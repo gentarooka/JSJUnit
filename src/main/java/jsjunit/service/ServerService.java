@@ -23,7 +23,7 @@ public class ServerService {
 	}
 	
 	public String getReuslt() {
-		String result = ResultServlet.getReult();
+		String result = ResultServlet.getResult();
 		return result;
 	}
 
