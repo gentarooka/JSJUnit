@@ -1,14 +1,16 @@
 package jsjunit.service;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+
+import com.google.common.io.Files;
+import com.google.common.io.InputSupplier;
+import com.google.common.io.Resources;
 
 final class WorkspaceManager {
 
@@ -127,39 +129,13 @@ final class WorkspaceManager {
 	}
 
 	private void copy(File dir, String name) throws IOException {
-		InputStream in = null;
-		try {
-			in = this.getClass().getResourceAsStream("/" + name);
-
-			if (in == null) {
-				throw new IllegalStateException("can not find " + name);
-			}
-
-			BufferedInputStream is = new BufferedInputStream(in);
-
-			File dest = new File(dir, name);
-			if (!dest.exists()) {
-				BufferedOutputStream bos = null;
-				try {
-
-					bos = new BufferedOutputStream(new FileOutputStream(dest));
-
-					for (int data = is.read(); data > 0; data = is.read()) {
-						bos.write(data);
-					}
-					bos.flush();
-				} finally {
-					if (bos != null) {
-						bos.close();
-					}
-				}
-			}
-		} finally {
-			if (in != null) {
-				in.close();
-			}
+		File dest = new File(dir, name);
+		if (dest.exists()) {
+			return;
 		}
 
+		InputSupplier<InputStream> input = Resources.newInputStreamSupplier(new URL("/" + name));
+		Files.copy(input, dest);
 	}
 
 	private void clean(File dir) {
@@ -173,17 +149,13 @@ final class WorkspaceManager {
 			return;
 		}
 
-		if (f.isFile()) {
-			f.delete();
-		}
-
 		if (f.isDirectory()) {
 			File[] files = f.listFiles();
 			for (File file : files) {
 				delete(file);
 			}
-			f.delete();
 		}
+		f.delete();
 	}
 
 }

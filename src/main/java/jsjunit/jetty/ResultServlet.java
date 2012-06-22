@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Joiner;
+
 public class ResultServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -49,21 +51,12 @@ public class ResultServlet extends HttpServlet {
 				throw new IllegalStateException(String.format(
 						"QUnit.done() was called %d times. Sent informations are:[%s]",
 						resultQue.size(),
-						stringify(resultQue)
+						Joiner.on(", ").join(resultQue)
 				));
 			}
 		}
 
 		return result;
-	}
-
-	private static String stringify(LinkedList<String> queue) {
-		StringBuilder builder = new StringBuilder();
-		for (String result : queue) {
-			if (builder.length() > 0) { builder.append(", "); }
-			builder.append(result);
-		}
-		return builder.toString();
 	}
 
 }

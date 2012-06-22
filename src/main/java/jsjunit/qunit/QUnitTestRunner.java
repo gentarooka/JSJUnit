@@ -22,6 +22,8 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
+import com.google.common.base.Joiner;
+
 public class QUnitTestRunner extends ParentRunner<TestJS> {
 
 	private final RunnerService runnerService;
@@ -92,18 +94,8 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 
 	@Override
 	protected Description describeChild(TestJS child) {
-		StringBuilder sb = new StringBuilder();
-		for (String js : child.value()) {
-			if (sb.length() == 0) {
-				sb.append(js);
-			} else {
-				sb.append(",");
-				sb.append(js);
-			}
-		}
-
 		return Description.createTestDescription(getTestClass().getJavaClass(),
-				" [" + sb.toString() + "]");
+				" [" + Joiner.on(',').join(child.value()) + "]");
 	}
 
 	@Override
