@@ -128,13 +128,18 @@ final class WorkspaceManager {
 		copy(dir, QUNIT_NAME);
 	}
 
-	private void copy(File dir, String name) throws IOException {
+	private void copy(File dir, final String name) throws IOException {
 		File dest = new File(dir, name);
 		if (dest.exists()) {
 			return;
 		}
 
-		InputSupplier<InputStream> input = Resources.newInputStreamSupplier(new URL("/" + name));
+		InputSupplier<InputStream> input = new InputSupplier<InputStream>() {
+			@Override
+			public InputStream getInput() throws IOException {
+				return getClass().getClassLoader().getResourceAsStream(name);
+			}
+		};
 		Files.copy(input, dest);
 	}
 
