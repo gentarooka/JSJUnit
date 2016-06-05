@@ -13,6 +13,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.io.Closeables;
+
 public final class PhantomJS {
 	private static class ProcessDestroyer extends TimerTask {
 
@@ -102,27 +104,14 @@ public final class PhantomJS {
 			String line = null;
 			try {
 				while ((line = reader.readLine()) != null) {
-					writer.write(line + "\n");
+					writer.write(line);
+					writer.write("\n");
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				if (writer != null) {
-					try {
-						writer.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-				if (reader != null) {
-					try {
-						reader.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
+				Closeables.closeQuietly(reader);
+				Closeables.closeQuietly(writer);
 			}
 		}
 

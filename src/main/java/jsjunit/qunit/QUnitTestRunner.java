@@ -22,6 +22,8 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
+import com.google.common.base.Joiner;
+
 public class QUnitTestRunner extends ParentRunner<TestJS> {
 
 	private final RunnerService runnerService;
@@ -92,18 +94,8 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 
 	@Override
 	protected Description describeChild(TestJS child) {
-		StringBuilder sb = new StringBuilder();
-		for (String js : child.value()) {
-			if (sb.length() == 0) {
-				sb.append(js);
-			} else {
-				sb.append(",");
-				sb.append(js);
-			}
-		}
-
 		return Description.createTestDescription(getTestClass().getJavaClass(),
-				" [" + sb.toString() + "]");
+				" [" + Joiner.on(',').join(child.value()) + "]");
 	}
 
 	@Override
@@ -126,7 +118,7 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 				notifier.fireTestFailure(failure);
 				return;
 			}
-			
+
 			if (child.total() >= 0 && child.total() != testResult.getTotal()) {
 				JSTestFailure failure = new JSTestFailure(describeChild(child),
 						url, "test total count should be " + child.total()
@@ -145,22 +137,22 @@ public class QUnitTestRunner extends ParentRunner<TestJS> {
 	private String buildMessage(QUnitResult result) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("TEST FAILED : " + result.getPassed() + "/"
-				+ result.getTotal() + CR);
+		sb.append("TEST FAILED : ").append(result.getPassed()).append("/")
+				.append(result.getTotal()).append(CR);
 		for (QUnitTestResult tr : result.getChildren()) {
 			if (tr.getModule() != null) {
 				sb.append("[");
 				sb.append(tr.getModule());
 				sb.append("] ");
 			}
-			sb.append(tr.getName() + " (" + tr.getPassed() + "/"
-					+ tr.getTotal() + ")" + CR);
+			sb.append(tr.getName()).append(" (").append(tr.getPassed()).append("/")
+					.append(tr.getTotal()).append(")").append(CR);
 
 			for (QUnitTestDetail detail : tr.getDetails()) {
 				if (!detail.isResult()) {
-					sb.append("    " + detail.getMessage());
-					sb.append(": expected '" + detail.getExpected()
-							+ "' but actual '" + detail.getActual() + "'" + CR);
+					sb.append("    ").append(detail.getMessage());
+					sb.append(": expected '").append(detail.getExpected())
+							.append("' but actual '").append(detail.getActual()).append("'").append(CR);
 				}
 			}
 		}
